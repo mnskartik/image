@@ -1,8 +1,8 @@
 Image compression
-process of Reducing size to image.
-Image compression works either by removing bytes o info. from image or by  using compression algo. to rewrite  the image file in a way that takes less space.
+it is the process of Reducing size of image.
+Image compression works either by removing bytes  info. from image or by  using compression algo. to rewrite  the image file in a way that takes less space.
 Importance:
-loads faster
+image loads faster
 
 lossy image compression
  it retains the most significant info for the image without keeping every single pixel.
