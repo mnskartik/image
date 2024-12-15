@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            background: indianred;
+            padding-top: 70px; /* Space for the fixed nav */
+        }
+
+        h1 {
+            color: #fff;
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: red;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav h1 {
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Image to PDF Converter</h1>
+    </nav>
+    
+    <input type="file" id="imageInput" accept="image/*" multiple>
+    <br>
+    <button onclick="convertToPDF()">Convert to PDF</button>
+
+    <script>
+        async function convertToPDF() {
+            const { jsPDF } = window.jspdf;
+            const fileInput = document.getElementById("imageInput");
+
+            if (!fileInput.files.length) {
+                alert("Please select one or more image files.");
+                return;
+            }
+
+            const pdf = new jsPDF();
+            const files = Array.from(fileInput.files);
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+
+                    img.onload = function () {
+                        const imgWidth = pdf.internal.pageSize.getWidth();
+                        const imgHeight = (img.height * imgWidth) / img.width;
+
+                        pdf.addImage(img, "JPEG", 0, 0, imgWidth, imgHeight);
+
+                        // Add a new page for the next image if it's not the last one
+                        if (i < files.length - 1) {
+                            pdf.addPage();
+                        }
+
+                        // Download the PDF after processing the last image
+                        if (i === files.length - 1) {
+                            pdf.save("converted-images.pdf");
+                        }
+                    };
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>

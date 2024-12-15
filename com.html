@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: indianred;
+        }
+
+        .btn {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #c43820;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #e24515;
+        }
+
+        #output-image {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        nav {
+             display: flex;
+             padding: 10px;
+             background-color: red;
+             
+            justify-content: center; 
+            align-items: center;    
+            
+        }
+    </style>
+</head>
+<body>
+    <nav><h1>Image Compressor</h1></nav>
+    <p>Upload an image to compress it and download the result.</p>
+    <input type="file" id="upload" accept="image/*" class="btn">
+    <br>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <img id="output-image" alt="Compressed Image" style="display: none;">
+    <br>
+    <a id="download-btn" class="btn" style="display: none;" download="compressed-image.jpg">Download Compressed Image</a>
+
+    <script>
+        const uploadInput = document.getElementById("upload");
+        const canvas = document.getElementById("canvas");
+        const outputImage = document.getElementById("output-image");
+        const downloadBtn = document.getElementById("download-btn");
+
+        uploadInput.addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    const MAX_DIMENSION = 1024; // Maximum width or height
+
+                     img.onload = function() {
+                         const canvasContext = canvas.getContext("2d");
+
+                       // Scale down large images
+                        let width = img.width;
+                        let height = img.height;
+
+                    if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+                           const aspectRatio = width / height;
+                        if (width > height) {
+                               width = MAX_DIMENSION;
+                               height = MAX_DIMENSION / aspectRatio;
+                        } else {
+                              height = MAX_DIMENSION;
+                              width = MAX_DIMENSION * aspectRatio;
+                }
+            }
+
+           canvas.width = width;
+           canvas.height = height;
+ 
+           // Draw the resized image on the canvas
+           canvasContext.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.6);
+            outputImage.src = compressedDataUrl;
+            outputImage.style.display = "block";
+            downloadBtn.href = compressedDataUrl;
+            downloadBtn.style.display = "inline-block";
+       };
+
+
+                    
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

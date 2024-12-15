@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Background Remover</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: indianred;
+        }
+
+        .btn {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        #output-image {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        #loader {
+            display: none;
+            font-size: 18px;
+            color: #555;
+        }
+        nav {
+             display: flex;
+             padding: 10px;
+             background-color: red;
+             
+            justify-content: center; 
+            align-items: center;    
+            
+        }
+    </style>
+</head>
+<body>
+    <nav><h1>Image Background Remover</h1></nav>
+    <p>Upload an image to remove its background and download the result.</p>
+    
+    <!-- Upload button -->
+    <input type="file" id="upload" accept="image/*" class="btn">
+    <br>
+
+    <!-- Loader while processing -->
+    <div id="loader">Processing... Please wait.</div>
+
+    <!-- Output elements -->
+    <img id="output-image" alt="Processed Image" style="display: none;">
+    <br>
+    <a id="download-btn" class="btn" style="display: none;" download="background-removed.png">Download Image</a>
+
+    <script>
+        const uploadInput = document.getElementById("upload");
+        const outputImage = document.getElementById("output-image");
+        const downloadBtn = document.getElementById("download-btn");
+        const loader = document.getElementById("loader");
+
+        const API_KEY = "your_remove_bg_api_key"; // Replace with your Remove.bg API key
+        const API_URL = "https://api.remove.bg/v1.0/removebg";
+
+        uploadInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                loader.style.display = "block";
+                const formData = new FormData();
+                formData.append("image_file", file);
+                formData.append("size", "auto");
+
+                fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "X-Api-Key": API_KEY,
+                    },
+                    body: formData,
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Failed to remove background. Please try again.");
+                        }
+                        return response.blob();
+                    })
+                    .then((blob) => {
+                        // Create a URL for the processed image
+                        const url = URL.createObjectURL(blob);
+                        outputImage.src = url;
+                        outputImage.style.display = "block";
+                        downloadBtn.href = url;
+                        downloadBtn.style.display = "inline-block";
+                    })
+                    .catch((error) => {
+                        alert(error.message);
+                    })
+                    .finally(() => {
+                        loader.style.display = "none";
+                    });
+            }
+        });
+    </script>
+</body>
+</html>

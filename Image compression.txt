@@ -1,0 +1,39 @@
+Image compression
+process of Reducing size to image.
+Image compression works either by removing bytes o info. from image or by  using compression algo. to rewrite  the image file in a way that takes less space.
+Importance:
+loads faster
+
+lossy image compression
+ it retains the most significant info for the image without keeping every single pixel.
+Methods;
+1.JPEG-Joint Photographic Experts Groups
+widely used image comp. methd
+2.WebP
+3.HEIF highly efficiency image format also known as HEIC
+
+lossless image comp.
+reduces image size by as much as 40%
+effective than lossy comp.
+Methods:
+Png-portable network graphics
+gif graphics interchange format
+bmp
+
+
+common image compression algos
+1.transform coding
+lossy img comp.
+uses tech. -discrete cosine transform
+jpeg relies on it
+2.RLE-run length encoding
+lossless image comp.
+encodes repeated pixels
+3.Arithmetic Coding
+lossless
+encodes frequently used characters in an image file
+4.Huffman coding
+similar as arithmetic but does not reduce much size
+5.LZW
+Lempel ziv welch algo ,lossless image comp algo
+6.Flate/deflate
